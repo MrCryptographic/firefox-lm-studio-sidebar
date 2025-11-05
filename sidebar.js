@@ -7,16 +7,14 @@ const settingsPanel = document.getElementById('settings-panel');
 const settingsForm = document.getElementById('settings-form');
 const serverUrlInput = document.getElementById('server-url');
 const statusMessage = document.getElementById('status-message');
-const contextBtn = document.getElementById('context-btn');
 const clearHistoryBtn = document.getElementById('clear-history-btn');
 
 // --- State Variables ---
 let chatHistory = [];
-let pageContext = '';
 let lastUserPrompt = null;
-let currentAIResponseElement = null; // The DOM element for the current AI message
-let currentAIContent = { think: '', text: '' }; // The text content for the current message
-let streamBuffer = ''; // Holds incoming chunks to parse for tags
+let currentAIResponseElement = null;
+let currentAIContent = { think: '', text: '' };
+let streamBuffer = '';
 let isThinking = false;
 
 // =================================================================================
@@ -28,7 +26,6 @@ form.addEventListener('submit', handleFormSubmit);
 settingsIcon.addEventListener('click', () => settingsPanel.classList.toggle('visible'));
 settingsForm.addEventListener('submit', saveSettings);
 clearHistoryBtn.addEventListener('click', handleClearHistory);
-contextBtn.addEventListener('click', handleGetContext);
 input.addEventListener('input', autoResizeTextarea);
 
 // Listen for messages from the background script
@@ -44,9 +41,6 @@ browser.runtime.onMessage.addListener((message) => {
             processStreamChunk(message.content, true);
             finalizeAIResponse();
             break;
-        case 'context-received':
-            handleContextReceived(message.content);
-            break;
     }
 });
 
@@ -57,7 +51,7 @@ browser.runtime.onMessage.addListener((message) => {
 // --- History Management ---
 
 async function loadChatHistory() {
-    restoreOptions(); // Also load settings
+    restoreOptions();
     const data = await browser.storage.local.get({ chatHistory: [] });
     chatHistory = data.chatHistory;
     renderHistory();
@@ -69,7 +63,6 @@ function renderHistory() {
         if (msg.role === 'user') {
             appendMessage('user', msg.content);
         } else if (msg.role === 'ai') {
-            // Re-create AI messages with their final content, think bubbles, and regenerate buttons
             const aiMsg = createAIMessageElement(msg.content.think, msg.content.text);
             chatContainer.appendChild(aiMsg);
             addRegenerateButton(aiMsg, msg.lastUserPrompt);
@@ -87,31 +80,9 @@ async function handleClearHistory() {
 }
 
 async function updateHistory() {
-    // Only add the last message to history if it's a complete AI response
     if (currentAIResponseElement && currentAIContent.text) {
         chatHistory.push({ role: 'ai', content: { ...currentAIContent }, lastUserPrompt });
         await browser.storage.local.set({ chatHistory });
-    }
-}
-
-// --- Page Context ---
-
-function handleGetContext() {
-    contextBtn.disabled = true;
-    contextBtn.textContent = '...';
-    browser.runtime.sendMessage({ action: 'getContext' });
-}
-
-function handleContextReceived(content) {
-    pageContext = content;
-    contextBtn.disabled = false;
-    contextBtn.innerHTML = contextBtn.innerHTML; // Reset content
-    if (pageContext) {
-        contextBtn.classList.add('active');
-        contextBtn.title = `Page context is active (${(pageContext.length / 1024).toFixed(1)} KB)`;
-    } else {
-        contextBtn.classList.remove('active');
-        contextBtn.title = 'Add Page Context';
     }
 }
 
@@ -123,24 +94,15 @@ async function handleFormSubmit(e) {
     if (!prompt) return;
 
     lastUserPrompt = prompt;
-    let fullPrompt = prompt;
-
-    // Prepend page context if it exists
-    if (pageContext) {
-        fullPrompt = `CONTEXT FROM CURRENT WEBPAGE:\n"""\n${pageContext}\n"""\n\nBased on the context above, answer the following question:\n\n${prompt}`;
-        pageContext = ''; // Reset context after use
-        contextBtn.classList.remove('active');
-        contextBtn.title = 'Add Page Context';
-    }
 
     // Update UI and history
     appendMessage('user', prompt);
     chatHistory.push({ role: 'user', content: prompt });
-    await browser.storage.local.set({ chatHistory }); // Save user message immediately
+    await browser.storage.local.set({ chatHistory });
 
     // Create placeholder and send prompt to background
     createAIResponsePlaceholder();
-    browser.runtime.sendMessage({ prompt: fullPrompt });
+    browser.runtime.sendMessage({ prompt: prompt });
 
     input.value = '';
     autoResizeTextarea();
@@ -162,7 +124,7 @@ function processStreamChunk(chunk, isError = false) {
     while (true) {
         if (!isThinking) {
             const thinkStart = streamBuffer.indexOf('<think>');
-            if (thinkStart === -1) break; // No more tags in buffer
+            if (thinkStart === -1) break;
 
             const textBeforeThink = streamBuffer.substring(0, thinkStart);
             currentAIContent.text += textBeforeThink;
@@ -171,7 +133,7 @@ function processStreamChunk(chunk, isError = false) {
 
         } else { // isThinking
             const thinkEnd = streamBuffer.indexOf('</think>');
-            if (thinkEnd === -1) break; // Tag not closed yet
+            if (thinkEnd === -1) break;
 
             const thinkText = streamBuffer.substring(0, thinkEnd);
             currentAIContent.think += thinkText;
@@ -187,7 +149,6 @@ function processStreamChunk(chunk, isError = false) {
 async function finalizeAIResponse() {
     if (!currentAIResponseElement) return;
 
-    // Add any remaining buffer content to the correct property
     if (isThinking) {
         currentAIContent.think += streamBuffer;
     } else {
@@ -198,7 +159,6 @@ async function finalizeAIResponse() {
     
     updateAIResponseUI();
     
-    // Remove cursor and add regenerate button
     const cursor = currentAIResponseElement.querySelector('.blinking-cursor');
     if (cursor) cursor.remove();
     addRegenerateButton(currentAIResponseElement, lastUserPrompt);
@@ -212,13 +172,11 @@ async function finalizeAIResponse() {
 // --- DOM Manipulation & UI Helpers ---
 
 function createAIResponsePlaceholder() {
-    // Clear any previous, unfinished AI message
     if (currentAIResponseElement) currentAIResponseElement.remove();
     
     currentAIContent = { think: '', text: '' };
-    currentAIResponseElement = createAIMessageElement('', ''); // Create with empty content
+    currentAIResponseElement = createAIMessageElement('', '');
     
-    // Add cursor to the text element
     const textElement = currentAIResponseElement.querySelector('.ai-text-content');
     const cursorElement = document.createElement('span');
     cursorElement.classList.add('blinking-cursor');
@@ -239,7 +197,6 @@ function updateAIResponseUI() {
         thinkBubble.classList.add('visible');
     }
     
-    // Preserve the cursor if it exists
     const cursor = textElement.querySelector('.blinking-cursor');
     textElement.textContent = currentAIContent.text;
     if (cursor) textElement.appendChild(cursor);
@@ -247,7 +204,6 @@ function updateAIResponseUI() {
     scrollToBottom();
 }
 
-// A new factory function to create an AI message element from final text
 function createAIMessageElement(thinkContent, textContent) {
     const aiMessageDiv = document.createElement('div');
     aiMessageDiv.classList.add('message', 'ai-message');
@@ -276,17 +232,15 @@ function addRegenerateButton(aiMessageElement, userPromptForThisResponse) {
     regenerateBtn.innerHTML = '🔄';
     
     regenerateBtn.addEventListener('click', async () => {
-        // Remove this AI message from history and storage
         const indexToRemove = chatHistory.findIndex(msg => msg.role === 'ai' && msg.content.text === aiMessageElement.querySelector('.ai-text-content').textContent);
         if (indexToRemove > -1) {
             chatHistory.splice(indexToRemove, 1);
             await browser.storage.local.set({ chatHistory });
         }
         
-        // Remove from UI
         aiMessageElement.remove();
         
-        // Re-send the prompt that led to this response
+        lastUserPrompt = userPromptForThisResponse; // Important: reset lastUserPrompt for history
         createAIResponsePlaceholder();
         browser.runtime.sendMessage({ prompt: userPromptForThisResponse });
     });
