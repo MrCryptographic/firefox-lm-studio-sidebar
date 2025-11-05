@@ -1,37 +1,114 @@
-/* Basic Reset & Dark Theme */
+/* --- Basic Reset & Dark Theme --- */
+:root {
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #2a2a2a;
+    --bg-tertiary: #3a3a3a;
+    --text-primary: #d4d4d4;
+    --text-secondary: #a0a0a0;
+    --accent-primary: #0078d4;
+    --accent-hover: #005a9e;
+}
+
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: #1e1e1e;
-    color: #d4d4d4;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
     display: flex;
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
 }
 
-/* Chat container styling */
+/* --- Header --- */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    border-bottom: 1px solid var(--bg-tertiary);
+    background-color: var(--bg-secondary);
+}
+
+.header h3 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.header-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.header-icons button {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.header-icons button:hover {
+    background-color: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+/* --- Settings Panel --- */
+#settings-panel {
+    display: none;
+    padding: 15px;
+    border-bottom: 1px solid var(--bg-tertiary);
+    background-color: #252525;
+}
+#settings-panel.visible { display: block; }
+#settings-form { display: flex; align-items: center; }
+#settings-form label { margin-right: 10px; font-size: 14px; }
+#settings-form input {
+    flex-grow: 1;
+    background-color: #3c3c3c;
+    border: 1px solid #555;
+    color: #f1f1f1;
+    border-radius: 4px;
+    padding: 5px 8px;
+}
+#settings-form button {
+    padding: 5px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    margin-left: 5px;
+    background-color: var(--accent-primary);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#settings-form button:hover { background-color: var(--accent-hover); }
+
+/* --- Chat Container --- */
 #chat-container {
     flex-grow: 1;
     overflow-y: auto;
-    padding: 10px;
+    padding: 15px;
     display: flex;
     flex-direction: column;
+    gap: 12px;
 }
 
-/* Message bubble styling */
 .message {
     max-width: 85%;
     padding: 10px 15px;
     border-radius: 18px;
-    margin-bottom: 10px;
-    line-height: 1.4;
+    line-height: 1.5;
     opacity: 0;
-    transform: translateY(10px);
-    animation: fadeIn 0.3s ease-out forwards;
+    transform: translateY(15px);
+    animation: fadeIn 0.4s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-/* Animation for new messages */
 @keyframes fadeIn {
     to {
         opacity: 1;
@@ -40,124 +117,139 @@ body {
 }
 
 .user-message {
-    background-color: #0078d4;
+    background-color: var(--accent-primary);
     color: white;
     align-self: flex-end;
     border-bottom-right-radius: 4px;
 }
 
 .ai-message {
-    background-color: #3a3a3a;
+    background-color: var(--bg-tertiary);
     align-self: flex-start;
     border-bottom-left-radius: 4px;
-    white-space: pre-wrap; /* Respects newlines from the AI */
+    position: relative;
 }
 
-/* Blinking cursor for AI response */
+/* --- New Think Bubble --- */
+.think-bubble {
+    background-color: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-style: italic;
+    white-space: pre-wrap;
+    display: none; /* Hidden by default */
+}
+
+.think-bubble.visible {
+    display: block;
+}
+
+.ai-text-content {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+/* --- New Regenerate Button --- */
+.regenerate-btn {
+    position: absolute;
+    bottom: -10px;
+    right: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--bg-tertiary);
+    color: var(--text-secondary);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.ai-message:hover .regenerate-btn {
+    opacity: 1;
+}
+
+.regenerate-btn:hover {
+    transform: rotate(45deg);
+    color: var(--text-primary);
+}
+
+
+/* --- Blinking Cursor --- */
 .blinking-cursor {
     display: inline-block;
     width: 8px;
-    height: 1em;
-    background-color: #d4d4d4;
+    height: 1.1em;
+    background-color: var(--text-primary);
     animation: blink 1s step-end infinite;
     vertical-align: text-bottom;
 }
 
 @keyframes blink {
-    from, to { background-color: transparent; }
-    50% { background-color: #d4d4d4; }
+    50% { background-color: transparent; }
 }
 
-/* Form styling */
+/* --- Prompt Form --- */
 #prompt-form {
     display: flex;
     padding: 10px;
-    border-top: 1px solid #3a3a3a;
+    border-top: 1px solid var(--bg-tertiary);
+    gap: 8px;
+    align-items: flex-end;
 }
 
 #prompt-input {
     flex-grow: 1;
-    background-color: #2a2a2a;
-    color: #d4d4d4;
-    border: 1px solid #4a4a4a;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--bg-tertiary);
     border-radius: 15px;
-    padding: 8px 12px;
+    padding: 10px 15px;
     resize: none;
     font-size: 14px;
     line-height: 1.4;
-    max-height: 100px;
+    max-height: 120px;
+    transition: border-color 0.2s;
+}
+#prompt-input:focus {
+    outline: none;
+    border-color: var(--accent-primary);
 }
 
 #prompt-form button {
-    background-color: #0078d4;
+    background-color: var(--accent-primary);
     color: white;
     border: none;
-    border-radius: 15px;
-    padding: 0 15px;
-    margin-left: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s, transform 0.2s;
 }
 
 #prompt-form button:hover {
-    background-color: #005a9e;
+    background-color: var(--accent-hover);
+    transform: scale(1.05);
 }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px;
-    border-bottom: 1px solid #3a3a3a;
-    background-color: #2a2a2a;
+/* Context Button Styling */
+#context-btn {
+    background-color: var(--bg-tertiary);
 }
-
-.header h3 {
-    margin: 0;
-    font-size: 16px;
+#context-btn:hover {
+    background-color: #4a4a4a;
 }
-
-#settings-icon {
-    cursor: pointer;
-    opacity: 0.7;
-}
-#settings-icon:hover {
-    opacity: 1;
-}
-
-#settings-panel {
-    display: none; /* Hidden by default */
-    padding: 15px;
-    border-bottom: 1px solid #3a3a3a;
-    background-color: #252525;
-}
-
-#settings-panel.visible {
-    display: block; /* Show the panel */
-}
-
-#settings-form label {
-    margin-right: 10px;
-    font-size: 14px;
-}
-
-#settings-form input {
-    background-color: #3c3c3c;
-    border: 1px solid #555;
-    color: #f1f1f1;
-    border-radius: 4px;
-    padding: 5px 8px;
-    width: 65%;
-}
-
-#settings-form button {
-    padding: 5px 12px;
-    font-size: 14px;
-    border-radius: 4px;
-    margin-left: 5px;
-}
-
-#status-message {
-    margin-left: 10px;
-    font-size: 12px;
-    color: #4caf50;
+#context-btn.active {
+    background-color: var(--accent-primary);
+    color: white;
 }
