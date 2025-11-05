@@ -1,11 +1,13 @@
 {
   "manifest_version": 3,
   "name": "LM Studio Sidebar",
-  "version": "1.5",
-  "description": "A simple sidebar chat interface for a local LM Studio server.",
+  "version": "2.0",
+  "description": "A powerful sidebar chat interface for a local LM Studio server with page context, history, and more.",
 
   "permissions": [
-    "storage"
+    "storage",
+    "scripting",
+    "activeTab"
   ],
 
   "host_permissions": [
@@ -24,11 +26,7 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "lm-studio-sidebar@your-email.com",
-      "strict_min_version": "109.0",
-
-      "data_collection_permissions": {
-        "required": ["none"]
-      }
+      "strict_min_version": "109.0"
     }
   }
 }
