@@ -130,7 +130,7 @@ body {
     position: relative;
 }
 
-/* --- New Think Bubble --- */
+/* --- Think Bubble --- */
 .think-bubble {
     background-color: rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -152,7 +152,7 @@ body {
     white-space: pre-wrap;
 }
 
-/* --- New Regenerate Button --- */
+/* --- Regenerate Button --- */
 .regenerate-btn {
     position: absolute;
     bottom: -10px;
@@ -240,16 +240,4 @@ body {
 #prompt-form button:hover {
     background-color: var(--accent-hover);
     transform: scale(1.05);
-}
-
-/* Context Button Styling */
-#context-btn {
-    background-color: var(--bg-tertiary);
-}
-#context-btn:hover {
-    background-color: #4a4a4a;
-}
-#context-btn.active {
-    background-color: var(--accent-primary);
-    color: white;
 }
