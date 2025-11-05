@@ -1,38 +1,61 @@
-// Listen for a message from the sidebar UI to start a fetch request.
+// Listen for messages from the sidebar
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.prompt) {
+        // Handle a chat prompt request
         fetchFromLMStudio(message.prompt);
         return true; 
+    } else if (message.action === 'getContext') {
+        // Handle a request to get page context
+        getPageContext();
+        return true;
     }
 });
 
+// New function to inject a script and get page text
+async function getPageContext() {
+    try {
+        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+        if (tab?.id) {
+            const results = await browser.scripting.executeScript({
+                target: { tabId: tab.id },
+                function: () => document.body.innerText,
+            });
+            
+            // Send the extracted text back to the sidebar
+            if (results && results[0] && results[0].result) {
+                 browser.runtime.sendMessage({ type: 'context-received', content: results[0].result });
+            } else {
+                 browser.runtime.sendMessage({ type: 'context-received', content: '' });
+            }
+        }
+    } catch (e) {
+        console.error("Error getting page context:", e);
+        browser.runtime.sendMessage({ type: 'context-received', content: '' });
+    }
+}
+
+// The rest of this file (fetchFromLMStudio) remains the same as before
 async function fetchFromLMStudio(prompt) {
-    // --- START OF CHANGES ---
-    // Get the saved URL from storage, with a default fallback.
     const data = await browser.storage.local.get({
         serverUrl: 'http://localhost:1234'
     });
     const serverUrl = data.serverUrl;
     const completionsUrl = `${serverUrl}/v1/chat/completions`;
-    // --- END OF CHANGES ---
 
     try {
-        // Use the new completionsUrl variable in the fetch call
         const response = await fetch(completionsUrl, { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 model: "local-model",
                 messages: [
-                    { "role": "system", "content": "You are a helpful assistant." },
+                    { "role": "system", "content": "You are a helpful assistant. If you need to think, use <think> and </think> tags to outline your thought process." },
                     { "role": "user", "content": prompt }
                 ],
                 temperature: 0.7,
                 stream: true,
             }),
         });
-        
-        // ... (the rest of the file is exactly the same) ...
         
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
