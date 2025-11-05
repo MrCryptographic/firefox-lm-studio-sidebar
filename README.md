@@ -8,6 +8,8 @@ A minimal, privacy-focused Firefox sidebar extension for chatting with your loca
 Bring the power of your local language models directly into your browser. This extension provides a seamless chat interface in the Firefox sidebar, connecting directly to your running LM Studio instance without ever leaving your current tab.
 
 Extension in use (the model I used was a little dumb):
+
+
 <img width="602" height="996" alt="image" src="https://github.com/user-attachments/assets/5389e6b5-b6b4-424f-8241-2db4d53bc83c" />
 
 ---
