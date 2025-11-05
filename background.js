@@ -3,36 +3,9 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.prompt) {
         // Handle a chat prompt request
         fetchFromLMStudio(message.prompt);
-        return true; 
-    } else if (message.action === 'getContext') {
-        // Handle a request to get page context
-        getPageContext();
         return true;
     }
 });
-
-// New function to inject a script and get page text
-async function getPageContext() {
-    try {
-        const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
-        if (tab?.id) {
-            const results = await browser.scripting.executeScript({
-                target: { tabId: tab.id },
-                function: () => document.body.innerText,
-            });
-            
-            // Send the extracted text back to the sidebar
-            if (results && results[0] && results[0].result) {
-                 browser.runtime.sendMessage({ type: 'context-received', content: results[0].result });
-            } else {
-                 browser.runtime.sendMessage({ type: 'context-received', content: '' });
-            }
-        }
-    } catch (e) {
-        console.error("Error getting page context:", e);
-        browser.runtime.sendMessage({ type: 'context-received', content: '' });
-    }
-}
 
 // The rest of this file (fetchFromLMStudio) remains the same as before
 async function fetchFromLMStudio(prompt) {
@@ -43,7 +16,7 @@ async function fetchFromLMStudio(prompt) {
     const completionsUrl = `${serverUrl}/v1/chat/completions`;
 
     try {
-        const response = await fetch(completionsUrl, { 
+        const response = await fetch(completionsUrl, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -56,7 +29,7 @@ async function fetchFromLMStudio(prompt) {
                 stream: true,
             }),
         });
-        
+
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
 
@@ -66,7 +39,7 @@ async function fetchFromLMStudio(prompt) {
 
             const chunk = decoder.decode(value);
             const lines = chunk.split("\n\n");
-            
+
             for (const line of lines) {
                 if (line.startsWith("data: ")) {
                     const data = line.substring(6);
