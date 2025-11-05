@@ -1,15 +1,13 @@
 # LM Studio Sidebar for Firefox
 
-![License](https://img.shields.io/github/license/MrCryptographic/firefox-lm-studio-sidebar)
-[![Mozilla Add-on (NOT REVIEWED YET)](https://addons.mozilla.org/en-US/developers/addon/lm-studio-sidebar/) <!-- TODO: Replace with your actual add-on link when available -->
+![License](https://img.shields.io/github/license/MrCryptographic/firefox-lm-studio-sidebar)  
+![Mozilla Add-on (NOT REVIEWED YET)](https://addons.mozilla.org/en-US/developers/addon/lm-studio-sidebar/) <!-- TODO: Replace with your actual add-on link when available -->
 
 A minimal, privacy-focused Firefox sidebar extension for chatting with your local AI models via an LM Studio server.
 
 Bring the power of your local language models directly into your browser. This extension provides a seamless chat interface in the Firefox sidebar, connecting directly to your running LM Studio instance without ever leaving your current tab.
 
-Extension in use (the model I used was a little dumb):
-
-
+Extension in use (the model I used was a little dumb):  
 <img width="602" height="996" alt="image" src="https://github.com/user-attachments/assets/5389e6b5-b6b4-424f-8241-2db4d53bc83c" />
 
 ---
@@ -30,11 +28,11 @@ Extension in use (the model I used was a little dumb):
 
 ## Installation
 
-#### Option 1: From the Firefox Add-on Store (Recommended)
+#### Option 1: From the Firefox Add-on Store (Recommended, but the extenextension isn't reviewed yet.)
 
 The easiest way to install is directly from the official Mozilla Add-ons website.
 
-> **[Install LM Studio Sidebar from Mozilla Add-ons](https://addons.mozilla.org/...)** <!-- TODO: Replace with your actual add-on link -->
+> **[Install LM Studio Sidebar from Mozilla Add-ons](https://addons.mozilla.org/en-US/developers/addon/lm-studio-sidebar/)** <!-- TODO: Replace with your actual add-on link -->
 
 #### Option 2: From Source (For Developers)
 
@@ -48,7 +46,7 @@ If you want to install the latest development version or modify the code:
 
 ## How to Use
 
-1.  **Start the Server:** Open LM Studio, load a model, and go to the "Local Server" tab (`<->` icon). Click **Start Server**.
+1.  **Start the Server:** Open LM Studio, load a model, and go to the "Local Server" tab (`<->` icon, recently changed to <img width="136" height="39" alt="image" src="https://github.com/user-attachments/assets/4168c1ce-166d-49d0-b954-d912c25703b9" />). Click **Start Server**.
 2.  **Open the Sidebar:** Click the LM Studio Sidebar icon in your Firefox toolbar.
 3.  **Configure (If Needed):** By default, the extension will try to connect to `http://localhost:1234`. If your server is on a different address, click the cog icon in the sidebar's header to open the settings and enter the correct URL.
 4.  **Start Chatting:** Type your prompt in the input box at the bottom and press Enter.
