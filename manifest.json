@@ -2,12 +2,10 @@
   "manifest_version": 3,
   "name": "LM Studio Sidebar",
   "version": "2.0",
-  "description": "A powerful sidebar chat interface for a local LM Studio server with page context, history, and more.",
+  "description": "A powerful sidebar chat interface for a local LM Studio server with history, think bubbles, and more.",
 
   "permissions": [
-    "storage",
-    "scripting",
-    "activeTab"
+    "storage"
   ],
 
   "host_permissions": [
