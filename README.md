@@ -1,3 +1,7 @@
+<img width="128" height="128" alt="firefox-lm-sidebar Icon" src="https://github.com/user-attachments/assets/e6a1e591-47cf-4fdc-beae-ffd9071e471d" />
+
+
+
 # LM Studio Sidebar for Firefox
 
 ![License](https://img.shields.io/github/license/MrCryptographic/firefox-lm-studio-sidebar)  
