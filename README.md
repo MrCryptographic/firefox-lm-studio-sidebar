@@ -1,7 +1,7 @@
 # LM Studio Sidebar for Firefox
 
 ![License](https://img.shields.io/github/license/MrCryptographic/firefox-lm-studio-sidebar)  
-[![Mozilla Add-on (NOT REVIEWED YET)](https://img.shields.io/badge/Firefox-Add--on-orange.svg)](https://addons.mozilla.org/en-US/developers/addon/lm-studio-sidebar/) <!-- TODO: Replace with your actual add-on link when available -->
+[![Mozilla Add-on](https://img.shields.io/badge/Firefox-Add--on-orange.svg)](https://addons.mozilla.org/en-US/firefox/addon/lm-studio-sidebar/) <!-- TODO: Replace with your actual add-on link when available -->
 
 A minimal, privacy-focused Firefox sidebar extension for chatting with your local AI models via an LM Studio server.
 
@@ -38,7 +38,7 @@ Extension in use (the model I used was a little dumb):
 
 The easiest way to install is directly from the official Mozilla Add-ons website.
 
-> **[Install LM Studio Sidebar from Mozilla Add-ons](https://addons.mozilla.org/en-US/developers/addon/lm-studio-sidebar/)** <!-- TODO: Replace with your actual add-on link -->
+> **[Install LM Studio Sidebar from Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/lm-studio-sidebar/)** <!-- TODO: Replace with your actual add-on link -->
 
 #### Option 2: From Source (For Developers)
 
