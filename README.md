@@ -38,9 +38,9 @@ Extension in use (the model I used was a little dumb):
 
 ## Installation
 
-#### Option 1: From the Firefox Add-on Store (Recommended, but the extension isn't reviewed yet.)
+#### Option 1: From the Firefox Add-on Store (Recommended)
 
-The easiest way to install is directly from the official Mozilla Add-ons website.
+The easiest way to install is directly from the official Mozilla Add-ons website. ***Keep in note the updates go into this repository first.***
 
 > **[Install LM Studio Sidebar from Mozilla Add-ons](https://addons.mozilla.org/en-US/firefox/addon/lm-studio-sidebar/)** <!-- TODO: Replace with your actual add-on link -->
 
